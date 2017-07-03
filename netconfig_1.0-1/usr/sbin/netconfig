@@ -1,0 +1,51 @@
+#! /bin/bash
+#
+# Short description: netconfig uses dhclient - Dynamic Host Configuration 
+#                    Protocol Client to reconfigure the main network 
+#                    interface (usually called eth0).
+### END INIT INFO
+
+# Author: tapxxor <tapxxor@gmail.org>
+# 
+# Version History
+# Version   Date        User            Descrption        
+# R1A01     07032017    tapxxor         Script creation
+
+# uncomment the below line to debug the script
+# /netset -x
+
+DESC="Reconfigure Network Interface"
+NAME=`basename $0`
+VERSION="R1A01"
+DEVICE=`ip link show | grep BROADCAST | cut -d : -f 2 | xargs`
+GATEWAY=`ip route list | grep default | cut -d " " -f 3 | xargs`
+
+# log when this script is called and with which parameters
+/usr/bin/logger -is -t $PROGNAME netconfig LOG : [INFO] $0 called with arguments: $@
+/usr/bin/logger -is -t $PROGNAME netconfig LOG : [INFO] Deamon started on $DEVICE\($GATEWAY\)
+
+while true; 
+do 
+    # sleep time
+    sleep 15
+
+    # ping default gateway
+    ping -c 1 $GATEWAY >/dev/null
+
+    if [ $? != 0 ]; then
+        # default gateway cannot be reached. try reconfiguring interface
+        #echo "ERROR: $GATEWAY cannot be reached. Reconfiguring $DEVICE..."
+        /usr/bin/logger -is -t $PROGNAME netconfig LOG : [ERROR] $GATEWAY cannot be reached
+        /usr/bin/logger -is -t $PROGNAME netconfig LOG : [INFO] Reconfiguring $DEVICE...
+        notify-send -i error "Connection error" "Reconfiguring $DEVICE..."
+
+        ifdown $DEVICE >/dev/null
+        sleep 1 
+        ifup $DEVICE >/dev/null
+        sleep 1
+        dhclient $DEVICE >/dev/null
+
+        #echo "Reconfiguring completed..."
+        /usr/bin/logger -is -t $PROGNAME netconfig LOG : [INFO] Reconfiguring $DEVICE DONE
+    fi
+done

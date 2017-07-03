@@ -1,0 +1,11 @@
+Package: netconfig
+Version: 1.0-1
+Section: base
+Priority: optional
+Architecture: i386
+Depends: start-stop-daemon (>= 1.17.5), dhclient (>= 4.2.4)
+Maintainer: tapxxor <tapxxor@gmastart-stop-daemonil.com>
+Description: netconfig 
+ uses dhclient - Dynamic Host Configuration 
+ Protocol Client to reconfigure the main network 
+ interface (usually called eth0)
