@@ -3,7 +3,6 @@
 # Short description: netconfig uses dhclient - Dynamic Host Configuration 
 #                    Protocol Client to reconfigure the main network 
 #                    interface (usually called eth0).
-### END INIT INFO
 
 # Author: tapxxor <tapxxor@gmail.org>
 # 
@@ -12,7 +11,7 @@
 # R1A01     07032017    tapxxor         Script creation
 
 # uncomment the below line to debug the script
-# /netset -x
+# set -x
 
 DESC="Reconfigure Network Interface"
 NAME=`basename $0`
